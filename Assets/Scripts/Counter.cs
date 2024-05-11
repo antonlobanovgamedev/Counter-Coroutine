@@ -1,14 +1,16 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Counter : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _counter;
+    [SerializeField] private float _timeInterval = 0.5f;
+
+    public UnityEvent CountChanged;
+
+    public int Count { get; private set; }
 
     private bool _isCounting = false;
-    private int _count = 0;
-    private float _timeInterval = 0.5f;
 
     private void OnEnable()
     {
@@ -19,15 +21,15 @@ public class Counter : MonoBehaviour
     {
         var wait = new WaitForSeconds(_timeInterval);
 
-        while(_count <= int.MaxValue)
+        while (Count <= int.MaxValue)
         {
             if (_isCounting)
             {
-                _counter.text = _count.ToString();
+                Count++;
+
+                CountChanged?.Invoke();
 
                 yield return wait;
-
-                _count++;
             }
             else
             {
